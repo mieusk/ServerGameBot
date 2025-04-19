@@ -1,17 +1,20 @@
 local discordia = require 'discordia'
 local client = discordia.Client()
+local powerID = 'IDcargo' --coloque o id do cargo do MUTADOR aqui
+local modID = 'modID' --coloque algum cargo de adm aqui, para que ele possa alterar o poder dos outros
+local token = "tokenBOT"
 
-local g = client:getGuild '869346657727291412'
+local g = client:getGuild 'IDservidor' --coloque o id do servidor aqui
 
 local p = {}
 local c = {
-  fortalecer = {'user', 'dá força para uma pessoa do cargo <@&1137506693626990644>', 
+  fortalecer = {'user', ('dá força para uma pessoa do cargo <@&%s>'):format(powerID), 
     function(m, id)
       local id = id
       if id:find('%<%@%d+%>') then
         id = id:gsub('%<%@', ''):gsub('%>', '')
       end
-      if m.guild:getMember(id):hasRole('1137506693626990644') and (m.guild:getMember(m.author.id):hasRole('869361522705572010') or m.guild:getMember(m.author.id):hasRole('1137517816984113202')) then
+      if m.guild:getMember(id):hasRole(powerID) and (m.guild:getMember(m.author.id):hasRole(modID) or m.guild:getMember(m.author.id):hasRole(powerID)) then
         p[id] = (p[id] or 0)+1
         m:reply {
           embed = {
@@ -23,7 +26,7 @@ local c = {
             color = 0xDC143C
           }
         }
-      elseif m.guild:getMember(id):hasRole('1137506693626990644') then
+      elseif m.guild:getMember(id):hasRole(powerID) then
         m:reply('Esse golpe você não sabe usar, caçador!')
       else
         m:reply(':wolf: Você está tentando dar força para quem não é um caçador?')
@@ -147,5 +150,4 @@ client:on('messageCreate', function(message)
   end
 end)
 
-local token = "removido"
 client:run("Bot "..token)
